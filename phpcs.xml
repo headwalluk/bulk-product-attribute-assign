@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<ruleset name="Bulk Product Attribute Assign Standards">
+	<description>WordPress Coding Standards for Bulk Product Attribute Assign</description>
+	
+	<file>.</file>
+	
+	<!-- Exclude patterns -->
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/assets/*</exclude-pattern>
+	<exclude-pattern>*/.git/*</exclude-pattern>
+	<exclude-pattern>*/dev-notes/*</exclude-pattern>
+	
+	<!-- Arguments -->
+	<arg value="sp"/>
+	<arg name="basepath" value="."/>
+	<arg name="colors"/>
+	<arg name="extensions" value="php"/>
+	<arg name="parallel" value="8"/>
+	
+	<!-- Rules -->
+	<rule ref="WordPress">
+		<exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+	</rule>
+	
+	<!-- Prefixes -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="bulk_product_attribute_assign"/>
+				<element value="bpaa"/>
+				<element value="Bulk_Product_Attribute_Assign"/>
+			</property>
+		</properties>
+	</rule>
+</ruleset>
