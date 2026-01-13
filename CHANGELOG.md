@@ -17,6 +17,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.0] - 2026-01-13
+
+### Added
+- **Attribute Visibility Control:** New checkbox option to control whether attributes are visible on product pages (Additional Information tab)
+- **UI Enhancement:** "Attribute visible on product page" option added as first checkbox in Options section
+
+### Changed
+- Attribute visibility now defaults to hidden (unchecked) to prevent clutter on product pages
+- Users can opt-in to showing attributes on frontend by checking the new option
+
+---
+
 ## [1.0.0] - 2026-01-13
 
 ### Added

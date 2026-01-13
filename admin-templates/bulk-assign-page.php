@@ -91,6 +91,11 @@ defined( 'ABSPATH' ) || die();
 						<td>
 							<fieldset>
 								<label>
+									<input type="checkbox" name="attribute_visible" value="1">
+									<?php esc_html_e( 'Attribute visible on product page', 'bulk-product-attribute-assign' ); ?>
+								</label>
+								<br>
+								<label>
 									<input type="checkbox" name="include_virtual" value="1">
 									<?php esc_html_e( 'Include virtual/downloadable products', 'bulk-product-attribute-assign' ); ?>
 								</label>

@@ -75,15 +75,16 @@ class Attribute_Processor {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int        $product_id Product ID.
-	 * @param string     $attribute  Attribute name.
-	 * @param array<int> $term_ids   Term IDs to assign.
-	 * @param string     $mode       Mode: 'add' or 'replace'.
-	 * @param bool       $dry_run    Whether this is a dry run (no actual changes).
+	 * @param int        $product_id        Product ID.
+	 * @param string     $attribute         Attribute name.
+	 * @param array<int> $term_ids          Term IDs to assign.
+	 * @param string     $mode              Mode: 'add' or 'replace'.
+	 * @param bool       $dry_run           Whether this is a dry run (no actual changes).
+	 * @param bool       $attribute_visible Whether attribute should be visible on product page.
 	 *
 	 * @return bool|\WP_Error True on success, WP_Error on failure.
 	 */
-	public function process_single_product( int $product_id, string $attribute, array $term_ids, string $mode, bool $dry_run = false ) {
+	public function process_single_product( int $product_id, string $attribute, array $term_ids, string $mode, bool $dry_run = false, bool $attribute_visible = false ) {
 		$product = wc_get_product( $product_id );
 
 		if ( ! $product ) {
@@ -133,7 +134,7 @@ class Attribute_Processor {
 		}
 
 		// Process parent product.
-		$result = $this->assign_terms_to_product( $product, $taxonomy, $valid_term_ids, $mode );
+		$result = $this->assign_terms_to_product( $product, $taxonomy, $valid_term_ids, $mode, $attribute_visible );
 
 		if ( is_wp_error( $result ) ) {
 			return $result;
@@ -150,14 +151,15 @@ class Attribute_Processor {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param \WC_Product $product  Product object.
-	 * @param string      $taxonomy Taxonomy name.
-	 * @param array<int>  $term_ids Term IDs to assign.
-	 * @param string      $mode     Mode: 'add' or 'replace'.
+	 * @param \WC_Product $product           Product object.
+	 * @param string      $taxonomy          Taxonomy name.
+	 * @param array<int>  $term_ids          Term IDs to assign.
+	 * @param string      $mode              Mode: 'add' or 'replace'.
+	 * @param bool        $attribute_visible Whether attribute should be visible on product page.
 	 *
 	 * @return bool|\WP_Error True on success, WP_Error on failure.
 	 */
-	private function assign_terms_to_product( \WC_Product $product, string $taxonomy, array $term_ids, string $mode ) {
+	private function assign_terms_to_product( \WC_Product $product, string $taxonomy, array $term_ids, string $mode, bool $attribute_visible = false ) {
 		$product_id = $product->get_id();
 
 		// Get attribute name without 'pa_' prefix.
@@ -208,7 +210,7 @@ class Attribute_Processor {
 		$attribute->set_id( wc_attribute_taxonomy_id_by_name( $attribute_name ) );
 		$attribute->set_name( $taxonomy );
 		$attribute->set_options( $final_term_ids );
-		$attribute->set_visible( true );
+		$attribute->set_visible( $attribute_visible );
 		$attribute->set_variation( false );
 
 		// Add it to the attributes array.

@@ -99,13 +99,14 @@ class Ajax_Handler {
 		}
 
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified above.
-		$attribute       = isset( $_POST['attribute'] ) ? sanitize_text_field( wp_unslash( $_POST['attribute'] ) ) : '';
-		$term_ids        = isset( $_POST['term_ids'] ) && is_array( $_POST['term_ids'] ) ? array_map( 'absint', wp_unslash( $_POST['term_ids'] ) ) : array();
-		$mode            = isset( $_POST['mode'] ) ? sanitize_text_field( wp_unslash( $_POST['mode'] ) ) : DEF_MODE_ADD;
-		$include_virtual = isset( $_POST['include_virtual'] ) ? (bool) filter_var( wp_unslash( $_POST['include_virtual'] ), FILTER_VALIDATE_BOOLEAN ) : false;
-		$dry_run         = isset( $_POST['dry_run'] ) ? (bool) filter_var( wp_unslash( $_POST['dry_run'] ), FILTER_VALIDATE_BOOLEAN ) : false;
-		$offset          = isset( $_POST['offset'] ) ? absint( $_POST['offset'] ) : 0;
-		$batch_size      = isset( $_POST['batch_size'] ) ? absint( $_POST['batch_size'] ) : DEF_BATCH_SIZE;
+		$attribute         = isset( $_POST['attribute'] ) ? sanitize_text_field( wp_unslash( $_POST['attribute'] ) ) : '';
+		$term_ids          = isset( $_POST['term_ids'] ) && is_array( $_POST['term_ids'] ) ? array_map( 'absint', wp_unslash( $_POST['term_ids'] ) ) : array();
+		$mode              = isset( $_POST['mode'] ) ? sanitize_text_field( wp_unslash( $_POST['mode'] ) ) : DEF_MODE_ADD;
+		$attribute_visible = isset( $_POST['attribute_visible'] ) ? (bool) filter_var( wp_unslash( $_POST['attribute_visible'] ), FILTER_VALIDATE_BOOLEAN ) : false;
+		$include_virtual   = isset( $_POST['include_virtual'] ) ? (bool) filter_var( wp_unslash( $_POST['include_virtual'] ), FILTER_VALIDATE_BOOLEAN ) : false;
+		$dry_run           = isset( $_POST['dry_run'] ) ? (bool) filter_var( wp_unslash( $_POST['dry_run'] ), FILTER_VALIDATE_BOOLEAN ) : false;
+		$offset            = isset( $_POST['offset'] ) ? absint( $_POST['offset'] ) : 0;
+		$batch_size        = isset( $_POST['batch_size'] ) ? absint( $_POST['batch_size'] ) : DEF_BATCH_SIZE;
 		// phpcs:enable
 
 		// Validate inputs.
@@ -153,7 +154,8 @@ class Ajax_Handler {
 				$attribute,
 				$term_ids,
 				$mode,
-				$dry_run
+				$dry_run,
+				$attribute_visible
 			);
 
 			if ( is_wp_error( $result ) ) {

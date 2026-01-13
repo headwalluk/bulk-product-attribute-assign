@@ -7,7 +7,7 @@ Requires PHP: 8.0
 Requires Plugins: woocommerce
 WC requires at least: 7.0
 WC tested up to: 10.0
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,6 +84,10 @@ Use the `bpaa_required_capability` filter:
 3. Results summary (coming soon)
 
 == Changelog ==
+
+= 1.1.0 - 2026-01-13 =
+* Added: Attribute visibility control - new checkbox to control whether attributes appear on product pages
+* Changed: Attribute visibility now defaults to hidden to prevent clutter on product pages
 
 = 1.0.0 - 2026-01-13 =
 * First stable release

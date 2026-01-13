@@ -7,7 +7,7 @@
 **Requires Plugins:** WooCommerce  
 **WC requires at least:** 7.0  
 **WC tested up to:** 10.0  
-**Stable tag:** 1.0.0  
+**Stable tag:** 1.1.0  
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 

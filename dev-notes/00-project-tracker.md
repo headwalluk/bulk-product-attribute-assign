@@ -1,6 +1,6 @@
 # Bulk Assign Product Attributes - Project Tracker
 
-**Version:** 1.0.0 (Release Candidate)  
+**Version:** 1.1.0  
 **Last Updated:** 13 January 2026
 
 ---
@@ -144,9 +144,24 @@ WordPress/WooCommerce plugin to bulk-assign product attribute terms to products.
 - [x] Create README.md with usage instructions
 - [x] Document known limitations
 - [x] Final phpcs check and fixes
-- [ ] Commit Phase 1 to git with proper message
-- [ ] Tag v1.0.0 release
-- [ ] Deploy to dev site for client testing
+- [x] Commit Phase 1 to git with proper message
+- [x] Tag v1.0.0 release
+- [x] Deploy to dev site for client testing
+
+### ✅ Milestone 11: v1.1.0 - Attribute Visibility Control
+- [x] Add "Attribute visible on product page" checkbox to Options section
+- [x] Update admin template with new checkbox (first option)
+- [x] Update JavaScript to capture and pass visibility parameter
+- [x] Update AJAX handler to accept attribute_visible parameter
+- [x] Update Attribute_Processor to use visibility parameter in set_visible()
+- [x] Set default to false (unchecked/hidden)
+- [x] Test with products to verify frontend visibility control
+- [x] Run phpcs and verify code standards compliance
+- [x] Update CHANGELOG.md for v1.1.0
+- [x] Update README.md stable tag
+- [x] Update readme.txt with v1.1.0 changelog
+- [x] Commit v1.1.0 changes to git
+- [x] Tag v1.1.0 release
 
 ---
 

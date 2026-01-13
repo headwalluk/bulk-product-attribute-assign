@@ -154,6 +154,7 @@
       const attribute = $('#bpaa-attribute').val();
       const termIds = $('#bpaa-terms').val();
       const mode = $('input[name="mode"]:checked').val();
+      const attributeVisible = $('input[name="attribute_visible"]').is(':checked');
       const includeVirtual = $('input[name="include_virtual"]').is(':checked');
       const previewOnly = $('input[name="preview_only"]').is(':checked');
 
@@ -183,6 +184,7 @@
         attribute: attribute,
         termIds: termIds,
         mode: mode,
+        attributeVisible: attributeVisible,
         includeVirtual: includeVirtual,
         dryRun: previewOnly,
       });
@@ -209,6 +211,7 @@
               attribute: settings.attribute,
               termIds: settings.termIds,
               mode: settings.mode,
+              attributeVisible: settings.attributeVisible,
               includeVirtual: settings.includeVirtual,
               dryRun: settings.dryRun,
               offset: 0,
@@ -250,6 +253,7 @@
           attribute: state.attribute,
           term_ids: state.termIds,
           mode: state.mode,
+          attribute_visible: state.attributeVisible,
           include_virtual: state.includeVirtual,
           dry_run: state.dryRun,
           offset: state.offset,
