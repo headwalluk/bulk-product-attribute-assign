@@ -7,7 +7,7 @@ Requires PHP: 8.0
 Requires Plugins: woocommerce
 WC requires at least: 7.0
 WC tested up to: 10.0
-Stable tag: 0.1.0
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,11 +20,17 @@ This WordPress/WooCommerce plugin provides a simple interface for bulk-assigning
 = Features =
 
 * **Bulk Operations:** Process hundreds or thousands of products at once
-* **AJAX Batch Processing:** Handles large datasets without timeouts
-* **Real-time Progress:** Live progress bar and statistics during processing
+* **AJAX Batch Processing:** Handles large datasets without timeouts with dynamic batch sizing
+* **Real-time Progress:** Live progress bar with accurate percentage and product count
+* **Product Count Preview:** Shows "This will affect X products" before processing
 * **Two Modes:** Add new terms or replace existing terms
+* **Product Filtering:** Include/exclude virtual and downloadable products
+* **Dry-Run Mode:** Preview mode to test operations without making changes
+* **Detailed Error Reporting:** See exactly which products failed and why
 * **WooCommerce HPOS Compatible:** Fully compatible with High-Performance Order Storage
 * **Safe Processing:** Confirmation dialogs and comprehensive error reporting
+* **Performance Optimized:** Cache suspension for large datasets prevents server overload
+* **Security First:** Nonce verification, capability checks, input sanitization, output escaping
 
 = Use Cases =
 
@@ -51,7 +57,7 @@ No. Operations cannot be undone. The plugin will show a confirmation dialog befo
 
 = What types of products are supported? =
 
-Simple and variable products are supported. For variable products, attributes are set on the parent product only. Bundle products are skipped by default.
+Simple and variable products are supported. For variable products, attributes are set on the parent product only - variations inherit attributes automatically.
 
 = Does this work with custom attributes? =
 
@@ -59,7 +65,17 @@ Yes! The plugin works with any product attribute registered as a global taxonomy
 
 = Will this timeout with large product catalogs? =
 
-No. The plugin uses AJAX batch processing to handle large datasets without timeouts.
+No. The plugin uses AJAX batch processing with dynamic batch sizing to handle large datasets without timeouts. It also suspends cache addition during processing to prevent object cache saturation.
+
+= Can I preview changes before applying them? =
+
+Yes! Check the "Preview only (dry-run)" option to see what would happen without actually making changes.
+
+= How do I change the required user capability? =
+
+Use the `bpaa_required_capability` filter:
+
+`add_filter( 'bpaa_required_capability', function() { return 'manage_options'; } );`
 
 == Screenshots ==
 
@@ -69,6 +85,23 @@ No. The plugin uses AJAX batch processing to handle large datasets without timeo
 
 == Changelog ==
 
+= 1.0.0 - 2026-01-13 =
+* First stable release
+* Full admin interface under WooCommerce → Bulk Assign Attributes
+* SelectWoo dropdowns for attribute and term selection
+* AJAX batch processing with dynamic batch sizing
+* Real-time progress bar with accurate percentage
+* Product count preview before processing
+* Two modes: Add terms or Replace all terms
+* Optional virtual/downloadable product filtering
+* Dry-run mode for previewing changes
+* Detailed error reporting with product IDs
+* WooCommerce HPOS fully compatible
+* Cache suspension for large datasets
+* Complete security implementation (nonces, capabilities, sanitization, escaping)
+* 100% WordPress Coding Standards compliant
+* Full translation support
+
 = 0.1.0 - 2026-01-13 =
 * Initial release
 * Plugin foundation and scaffolding
@@ -77,8 +110,8 @@ No. The plugin uses AJAX batch processing to handle large datasets without timeo
 
 == Upgrade Notice ==
 
-= 0.1.0 =
-Initial release - foundation and scaffolding complete.
+= 1.0.0 =
+First stable release with full feature set. Upgrade from 0.1.0 to get complete bulk attribute assignment functionality.
 
 == Requirements ==
 

@@ -1,0 +1,104 @@
+/**
+ * Admin styles for Bulk Assign Product Attributes.
+ *
+ * @package Bulk_Product_Attribute_Assign
+ */
+
+.bpaa-admin-wrapper {
+	max-width: 900px;
+}
+
+.bpaa-product-count {
+	background: #f0f0f1;
+	border-left: 4px solid #2271b1;
+	padding: 12px;
+	margin: 20px 0;
+}
+
+.bpaa-product-count p {
+	margin: 0;
+}
+
+#bpaa-count {
+	font-size: 18px;
+	color: #2271b1;
+}
+
+.bpaa-progress-bar {
+	background: #f0f0f1;
+	border: 1px solid #c3c4c7;
+	border-radius: 3px;
+	height: 30px;
+	margin: 20px 0;
+	overflow: hidden;
+}
+
+.bpaa-progress-fill {
+	background: #2271b1;
+	height: 100%;
+	transition: width 0.3s ease;
+}
+
+.bpaa-progress-text {
+	font-size: 16px;
+	font-weight: 600;
+	text-align: center;
+}
+
+.bpaa-results-content {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 3px;
+	padding: 20px;
+	margin: 20px 0;
+}
+
+.bpaa-stats {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 15px;
+	margin-bottom: 20px;
+}
+
+.bpaa-stat {
+	background: #f0f0f1;
+	border-radius: 3px;
+	padding: 15px;
+	text-align: center;
+}
+
+.bpaa-stat-value {
+	display: block;
+	font-size: 32px;
+	font-weight: 700;
+	color: #2271b1;
+}
+
+.bpaa-stat-label {
+	display: block;
+	font-size: 14px;
+	color: #646970;
+	margin-top: 5px;
+}
+
+.bpaa-errors {
+	margin-top: 20px;
+}
+
+.bpaa-error-item {
+	background: #fcf0f1;
+	border-left: 4px solid #d63638;
+	padding: 10px;
+	margin-bottom: 10px;
+}
+
+.bpaa-error-item code {
+	background: rgba(0, 0, 0, 0.05);
+	padding: 2px 6px;
+	border-radius: 3px;
+}
+
+/* Select2 adjustments */
+.select2-container {
+	min-width: 400px;
+}

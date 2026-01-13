@@ -3,7 +3,7 @@
  * Plugin Name: Bulk Assign Product Attributes
  * Plugin URI: https://headwall-hosting.com/
  * Description: Bulk-assign product attribute terms to WooCommerce products. Designed for setting customs metadata (Country of Origin, HS Code, Customs Description) across large product catalogs.
- * Version: 0.1.0
+ * Version: 1.0.0
  * Author: Paul Faulkner
  * Author URI: https://headwall-hosting.com/
  * Text Domain: bulk-product-attribute-assign
@@ -20,7 +20,7 @@
 defined( 'ABSPATH' ) || die();
 
 // Define plugin constants.
-define( 'BPAA_VERSION', '0.1.0' );
+define( 'BPAA_VERSION', '1.0.0' );
 define( 'BPAA_FILE', __FILE__ );
 define( 'BPAA_PATH', plugin_dir_path( __FILE__ ) );
 define( 'BPAA_URL', plugin_dir_url( __FILE__ ) );

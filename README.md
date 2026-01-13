@@ -7,7 +7,7 @@
 **Requires Plugins:** WooCommerce  
 **WC requires at least:** 7.0  
 **WC tested up to:** 10.0  
-**Stable tag:** 0.1.0  
+**Stable tag:** 1.0.0  
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,13 +22,19 @@ This WordPress/WooCommerce plugin provides a simple interface for bulk-assigning
 ### Features
 
 - **Bulk Operations:** Process hundreds or thousands of products at once
-- **AJAX Batch Processing:** Handles large datasets without timeouts
-- **Real-time Progress:** Live progress bar and statistics during processing
+- **AJAX Batch Processing:** Handles large datasets without timeouts with dynamic batch sizing
+- **Real-time Progress:** Live progress bar with accurate percentage and product count
+- **Product Count Preview:** Shows "This will affect X products" before processing
 - **Two Modes:**
   - **Add Mode:** Add new terms to existing attribute terms
   - **Replace Mode:** Replace all existing terms with new ones
+- **Product Filtering:** Include/exclude virtual and downloadable products
+- **Dry-Run Mode:** Preview mode to test operations without making changes
+- **Detailed Error Reporting:** See exactly which products failed and why
 - **WooCommerce HPOS Compatible:** Fully compatible with High-Performance Order Storage
 - **Safe Processing:** Confirmation dialogs and comprehensive error reporting
+- **Performance Optimized:** Cache suspension for large datasets prevents server overload
+- **Security First:** Nonce verification, capability checks, input sanitization, output escaping
 
 ### Use Cases
 
@@ -50,20 +56,27 @@ This WordPress/WooCommerce plugin provides a simple interface for bulk-assigning
 ## Usage
 
 1. **Select Attribute:** Choose the product attribute you want to update
-2. **Select Terms:** Pick one or more terms to assign
+2. **Select Terms:** Pick one or more terms to assign (loads dynamically)
 3. **Choose Mode:**
    - **Add:** Adds selected terms to existing terms
    - **Replace:** Replaces all existing terms with selected ones
-4. **Click "Set attributes now..."**
-5. **Confirm:** Confirm the operation (cannot be undone)
-6. **Monitor Progress:** Watch real-time progress and statistics
+4. **Optional Settings:**
+   - **Include virtual/downloadable products:** Check to process non-shippable products
+   - **Preview only (dry-run):** Check to test without making changes
+5. **Preview Count:** See how many products will be affected
+6. **Click "Set attributes now..."**
+7. **Confirm:** Confirm the operation (cannot be undone)
+8. **Monitor Progress:** Watch real-time progress bar and statistics
+9. **Review Results:** See successful/failed operations with details
 
 ### Important Notes
 
-- Operations cannot be undone
-- Only shippable products are processed
-- For variable products, attributes are set on the parent product only
-- Bundle products are skipped by default
+- Operations cannot be undone (use dry-run mode to preview)
+- By default, only shippable products are processed
+- For variable products, attributes are set on the parent product only (variations inherit)
+- Attributes must be registered as global product taxonomies
+- Progress bar shows accurate percentage and product count
+- Failed operations display product ID and error reason
 
 ---
 
