@@ -10,10 +10,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- Product category/tag filtering (query builder UI)
 - Bundle product handling option
 - Resume capability for interrupted operations
 - Export results to CSV
+
+---
+
+## [1.2.0] - 2026-01-14
+
+### Added
+- **Advanced Product Filtering:** Progressive disclosure filter panel with toggle checkbox
+- **Product Status Filter:** Multi-select for filtering by product status (publish, draft, pending, private)
+- **Category Filter:** Multi-select dropdown for filtering by product categories
+- **Tag Filter:** Multi-select dropdown for filtering by product tags
+- **Name Search:** Text input for filtering products by name (case-insensitive partial match)
+- **Filter Toggle:** Enable/disable filters without losing selections
+- **Reset Options:** Button to clear all form fields and filters to defaults
+- **Product Count Updates:** Dynamic count updates when filters are toggled or changed
+- **Code-First Templates:** All admin templates refactored to code-first pattern using echo/printf
+
+### Changed
+- Moved virtual/downloadable product checkboxes into filter panel
+- Filter panel positioned below action buttons to prevent layout shift
+- Batch size calculation now ensures minimum batch size of 1 when products exist
+- Product query now respects all filter parameters (status, categories, tags, name)
+
+### Technical
+- New `Ajax_Handler::extract_filters()` method for centralized filter extraction and sanitization
+- Filter enable/disable state properly passed to all AJAX endpoints
+- Enhanced `Attribute_Processor::get_products_to_process()` with comprehensive filter support
+- Uses WooCommerce API parameters (`product_category_id`, `product_tag_id`) for proper HPOS compatibility
+- Created modular `admin-templates/filter-panel.php` template
+- Created modular `admin-templates/progress-panel.php` template
+- JavaScript `getFilterValues()` collects all filter data with enabled flag
+- JavaScript `resetForm()` clears all inputs and updates product count
 
 ---
 

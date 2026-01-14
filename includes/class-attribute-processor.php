@@ -37,16 +37,21 @@ class Attribute_Processor {
 	 */
 	public function get_products_to_process( array $args = array() ): array {
 		$defaults = array(
-			'include_virtual' => false,
-			'limit'           => -1,
-			'offset'          => 0,
+			'product_status'       => array( 'publish' ),
+			'categories'           => array(),
+			'tags'                 => array(),
+			'name_search'          => '',
+			'include_virtual'      => false,
+			'include_downloadable' => false,
+			'limit'                => -1,
+			'offset'               => 0,
 		);
 
 		$args = wp_parse_args( $args, $defaults );
 
 		// Build WooCommerce product query args.
 		$query_args = array(
-			'status' => 'publish',
+			'status' => $args['product_status'],
 			'limit'  => $args['limit'],
 			'offset' => $args['offset'],
 			'return' => 'ids',
@@ -54,8 +59,26 @@ class Attribute_Processor {
 
 		// Exclude virtual/downloadable products if not included.
 		if ( ! $args['include_virtual'] ) {
-			$query_args['virtual']      = false;
+			$query_args['virtual'] = false;
+		}
+
+		if ( ! $args['include_downloadable'] ) {
 			$query_args['downloadable'] = false;
+		}
+
+		// Name search.
+		if ( ! empty( $args['name_search'] ) ) {
+			$query_args['s'] = $args['name_search'];
+		}
+
+		// Category filter.
+		if ( ! empty( $args['categories'] ) ) {
+			$query_args['product_category_id'] = $args['categories'];
+		}
+
+		// Tag filter.
+		if ( ! empty( $args['tags'] ) ) {
+			$query_args['product_tag_id'] = $args['tags'];
 		}
 
 		// Suspend cache addition for large queries to prevent object cache saturation.

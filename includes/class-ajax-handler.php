@@ -42,6 +42,44 @@ class Ajax_Handler {
 	}
 
 	/**
+	 * Extract and sanitize filter values from POST data.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return array<string, mixed> Sanitized filter values.
+	 */
+	private function extract_filters(): array {
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in calling method.
+		// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized in array_map calls below.
+		$filters = isset( $_POST['filters'] ) && is_array( $_POST['filters'] ) ? wp_unslash( $_POST['filters'] ) : array();
+		// phpcs:enable
+
+		$enabled = isset( $filters['enabled'] ) ? (bool) filter_var( $filters['enabled'], FILTER_VALIDATE_BOOLEAN ) : false;
+
+		// If filters are not enabled, return defaults.
+		if ( ! $enabled ) {
+			return array(
+				'product_status'       => array( 'publish' ),
+				'categories'           => array(),
+				'tags'                 => array(),
+				'name_search'          => '',
+				'include_virtual'      => false,
+				'include_downloadable' => false,
+			);
+		}
+
+		// Filters are enabled - extract and sanitize values.
+		return array(
+			'product_status'       => isset( $filters['product_status'] ) && is_array( $filters['product_status'] ) ? array_map( 'sanitize_text_field', $filters['product_status'] ) : array( 'publish' ),
+			'categories'           => isset( $filters['categories'] ) && is_array( $filters['categories'] ) ? array_map( 'absint', $filters['categories'] ) : array(),
+			'tags'                 => isset( $filters['tags'] ) && is_array( $filters['tags'] ) ? array_map( 'absint', $filters['tags'] ) : array(),
+			'name_search'          => isset( $filters['name_search'] ) ? sanitize_text_field( $filters['name_search'] ) : '',
+			'include_virtual'      => isset( $filters['include_virtual'] ) ? (bool) filter_var( $filters['include_virtual'], FILTER_VALIDATE_BOOLEAN ) : false,
+			'include_downloadable' => isset( $filters['include_downloadable'] ) ? (bool) filter_var( $filters['include_downloadable'], FILTER_VALIDATE_BOOLEAN ) : false,
+		);
+	}
+
+	/**
 	 * Get total count of products to process (before starting batch processing).
 	 *
 	 * @since 1.0.0
@@ -55,22 +93,16 @@ class Ajax_Handler {
 			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'bulk-product-attribute-assign' ) ) );
 		}
 
-		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified above.
-		$include_virtual = isset( $_POST['include_virtual'] ) ? (bool) filter_var( wp_unslash( $_POST['include_virtual'] ), FILTER_VALIDATE_BOOLEAN ) : false;
-		// phpcs:enable
+		$filters = $this->extract_filters();
 
 		// Get total count.
-		$product_ids = $this->attribute_processor->get_products_to_process(
-			array(
-				'include_virtual' => $include_virtual,
-				'limit'           => -1,
-			)
-		);
+		$product_ids = $this->attribute_processor->get_products_to_process( $filters );
 
 		$total_count = count( $product_ids );
 
 		// Calculate optimal batch size: ceil(total / 3), capped at DEF_BATCH_SIZE.
-		$batch_size = $total_count > 0 ? (int) ceil( $total_count / 3 ) : DEF_BATCH_SIZE;
+		// Ensure batch size is at least 1 when we have products to process.
+		$batch_size = $total_count > 0 ? max( 1, (int) ceil( $total_count / 3 ) ) : DEF_BATCH_SIZE;
 		$batch_size = min( $batch_size, DEF_BATCH_SIZE );
 
 		// Apply filter to allow customization.
@@ -103,11 +135,12 @@ class Ajax_Handler {
 		$term_ids          = isset( $_POST['term_ids'] ) && is_array( $_POST['term_ids'] ) ? array_map( 'absint', wp_unslash( $_POST['term_ids'] ) ) : array();
 		$mode              = isset( $_POST['mode'] ) ? sanitize_text_field( wp_unslash( $_POST['mode'] ) ) : DEF_MODE_ADD;
 		$attribute_visible = isset( $_POST['attribute_visible'] ) ? (bool) filter_var( wp_unslash( $_POST['attribute_visible'] ), FILTER_VALIDATE_BOOLEAN ) : false;
-		$include_virtual   = isset( $_POST['include_virtual'] ) ? (bool) filter_var( wp_unslash( $_POST['include_virtual'] ), FILTER_VALIDATE_BOOLEAN ) : false;
 		$dry_run           = isset( $_POST['dry_run'] ) ? (bool) filter_var( wp_unslash( $_POST['dry_run'] ), FILTER_VALIDATE_BOOLEAN ) : false;
 		$offset            = isset( $_POST['offset'] ) ? absint( $_POST['offset'] ) : 0;
 		$batch_size        = isset( $_POST['batch_size'] ) ? absint( $_POST['batch_size'] ) : DEF_BATCH_SIZE;
 		// phpcs:enable
+
+		$filters = $this->extract_filters();
 
 		// Validate inputs.
 		if ( empty( $attribute ) ) {
@@ -123,13 +156,10 @@ class Ajax_Handler {
 		}
 
 		// Get batch of products to process.
-		$product_ids = $this->attribute_processor->get_products_to_process(
-			array(
-				'include_virtual' => $include_virtual,
-				'limit'           => $batch_size,
-				'offset'          => $offset,
-			)
-		);
+		$filters['limit']  = $batch_size;
+		$filters['offset'] = $offset;
+
+		$product_ids = $this->attribute_processor->get_products_to_process( $filters );
 
 		// Track results.
 		$results = array(
@@ -174,14 +204,10 @@ class Ajax_Handler {
 		wp_suspend_cache_addition( false );
 
 		// Check if there are more products to process.
-		$next_offset   = $offset + $batch_size;
-		$more_products = $this->attribute_processor->get_products_to_process(
-			array(
-				'include_virtual' => $include_virtual,
-				'limit'           => 1,
-				'offset'          => $next_offset,
-			)
-		);
+		$next_offset       = $offset + $batch_size;
+		$filters['limit']  = 1;
+		$filters['offset'] = $next_offset;
+		$more_products     = $this->attribute_processor->get_products_to_process( $filters );
 
 		$results['has_more']    = ! empty( $more_products );
 		$results['next_offset'] = $next_offset;
@@ -204,25 +230,11 @@ class Ajax_Handler {
 		}
 
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified above.
-		$include_virtual = isset( $_POST['include_virtual'] ) ? (bool) filter_var( wp_unslash( $_POST['include_virtual'] ), FILTER_VALIDATE_BOOLEAN ) : false;
-		// phpcs:enable
+		$filters = $this->extract_filters();
 
-		// Build product query args.
-		$args = array(
-			'limit'  => -1,
-			'status' => 'publish',
-			'return' => 'ids',
-		);
-
-		// Exclude virtual/downloadable products if not included.
-		if ( ! $include_virtual ) {
-			$args['virtual']      = false;
-			$args['downloadable'] = false;
-		}
-
-		// Get all products.
-		$products = wc_get_products( $args );
-		$count    = count( $products );
+		// Get product IDs using filter.
+		$product_ids = $this->attribute_processor->get_products_to_process( $filters );
+		$count       = count( $product_ids );
 
 		wp_send_json_success( array( 'count' => $count ) );
 	}

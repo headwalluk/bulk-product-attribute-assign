@@ -7,137 +7,128 @@
 
 defined( 'ABSPATH' ) || die();
 
-?>
-<div class="wrap">
-	<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-	
-	<div class="bpaa-admin-wrapper">
-		<form id="bpaa-form" method="post">
-			<?php wp_nonce_field( \Bulk_Product_Attribute_Assign\NONCE_ACTION_PROCESS, 'bpaa_nonce' ); ?>
-			
-			<table class="form-table" role="presentation">
-				<tbody>
-					<tr>
-						<th scope="row">
-							<label for="bpaa-attribute">
-								<?php esc_html_e( 'Product Attribute', 'bulk-product-attribute-assign' ); ?>
-							</label>
-						</th>
-						<td>
-							<select id="bpaa-attribute" name="attribute" class="regular-text" required>
-								<option value=""><?php esc_html_e( 'Select an attribute...', 'bulk-product-attribute-assign' ); ?></option>
-								<?php
-								// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variables in template.
-								// Get all product attributes (global taxonomies).
-								$attributes = wc_get_attribute_taxonomies();
-								foreach ( $attributes as $attribute ) {
-									printf(
-										'<option value="%s">%s</option>',
-										esc_attr( $attribute->attribute_name ),
-										esc_html( $attribute->attribute_label )
-									);
-								}
-								// phpcs:enable
-								?>
-							</select>
-							<p class="description">
-								<?php esc_html_e( 'Select the product attribute you want to update.', 'bulk-product-attribute-assign' ); ?>
-							</p>
-						</td>
-					</tr>
-					
-					<tr>
-						<th scope="row">
-							<label for="bpaa-terms">
-								<?php esc_html_e( 'Attribute Terms', 'bulk-product-attribute-assign' ); ?>
-							</label>
-						</th>
-						<td>
-							<select id="bpaa-terms" name="terms[]" class="regular-text" multiple="multiple" required disabled>
-								<option value=""><?php esc_html_e( 'Select an attribute first...', 'bulk-product-attribute-assign' ); ?></option>
-							</select>
-							<p class="description">
-								<?php esc_html_e( 'Select one or more terms to assign to products.', 'bulk-product-attribute-assign' ); ?>
-							</p>
-						</td>
-					</tr>
-					
-					<tr>
-						<th scope="row">
-							<?php esc_html_e( 'Mode', 'bulk-product-attribute-assign' ); ?>
-						</th>
-						<td>
-							<fieldset>
-								<label>
-									<input type="radio" name="mode" value="<?php echo esc_attr( \Bulk_Product_Attribute_Assign\DEF_MODE_ADD ); ?>" checked>
-									<?php esc_html_e( 'Add to existing terms', 'bulk-product-attribute-assign' ); ?>
-								</label>
-								<br>
-								<label>
-									<input type="radio" name="mode" value="<?php echo esc_attr( \Bulk_Product_Attribute_Assign\DEF_MODE_REPLACE ); ?>">
-									<?php esc_html_e( 'Replace all existing terms', 'bulk-product-attribute-assign' ); ?>
-								</label>
-								<p class="description">
-									<?php esc_html_e( 'Choose whether to add terms or replace existing ones.', 'bulk-product-attribute-assign' ); ?>
-								</p>
-							</fieldset>
-						</td>
-					</tr>
-					
-					<tr>
-						<th scope="row">
-							<?php esc_html_e( 'Options', 'bulk-product-attribute-assign' ); ?>
-						</th>
-						<td>
-							<fieldset>
-								<label>
-									<input type="checkbox" name="attribute_visible" value="1">
-									<?php esc_html_e( 'Attribute visible on product page', 'bulk-product-attribute-assign' ); ?>
-								</label>
-								<br>
-								<label>
-									<input type="checkbox" name="include_virtual" value="1">
-									<?php esc_html_e( 'Include virtual/downloadable products', 'bulk-product-attribute-assign' ); ?>
-								</label>
-								<br>
-								<label>
-									<input type="checkbox" name="preview_only" value="1">
-									<?php esc_html_e( 'Preview only (dry-run - don\'t make changes)', 'bulk-product-attribute-assign' ); ?>
-								</label>
-								<p class="description">
-									<?php esc_html_e( 'By default, only shippable products are processed.', 'bulk-product-attribute-assign' ); ?>
-								</p>
-							</fieldset>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			
-			<div class="bpaa-product-count">
-				<p>
-					<strong><?php esc_html_e( 'Products to process:', 'bulk-product-attribute-assign' ); ?></strong>
-					<span id="bpaa-count">-</span>
-				</p>
-			</div>
-			
-			<p class="submit">
-				<button type="submit" class="button button-primary button-large" id="bpaa-submit">
-					<?php esc_html_e( 'Set attributes now...', 'bulk-product-attribute-assign' ); ?>
-				</button>
-			</p>
-		</form>
-		
-		<div id="bpaa-progress" style="display:none;">
-			<h2><?php esc_html_e( 'Processing...', 'bulk-product-attribute-assign' ); ?></h2>
-			<div class="bpaa-progress-bar">
-				<div id="bpaa-progress-bar" class="bpaa-progress-fill" style="width: 0%;"></div>
-			</div>
-			<p id="bpaa-progress-text">0%</p>
-		</div>
-		
-		<div id="bpaa-results" style="display:none;">
-			<h2><?php esc_html_e( 'Results', 'bulk-product-attribute-assign' ); ?></h2>
-			<div class="bpaa-results-content"></div>
-		</div>
-	</div>
-</div>
+// Page wrapper.
+echo '<div class="wrap">';
+printf( '<h1>%s</h1>', esc_html( get_admin_page_title() ) );
+
+echo '<div class="bpaa-admin-wrapper">';
+
+// Form start.
+echo '<form id="bpaa-form" method="post">';
+wp_nonce_field( \Bulk_Product_Attribute_Assign\NONCE_ACTION_PROCESS, 'bpaa_nonce' );
+
+// Form table.
+echo '<table class="form-table" role="presentation"><tbody>';
+
+// Product Attribute row.
+echo '<tr>';
+printf(
+	'<th scope="row"><label for="bpaa-attribute">%s</label></th>',
+	esc_html__( 'Product Attribute', 'bulk-product-attribute-assign' )
+);
+echo '<td>';
+echo '<select id="bpaa-attribute" name="attribute" class="regular-text" required>';
+printf( '<option value="">%s</option>', esc_html__( 'Select an attribute...', 'bulk-product-attribute-assign' ) );
+
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variables in template.
+$bpaa_attributes = wc_get_attribute_taxonomies();
+foreach ( $bpaa_attributes as $bpaa_attribute ) {
+	printf(
+		'<option value="%s">%s</option>',
+		esc_attr( $bpaa_attribute->attribute_name ),
+		esc_html( $bpaa_attribute->attribute_label )
+	);
+}
+// phpcs:enable
+
+echo '</select>';
+printf(
+	'<p class="description">%s</p>',
+	esc_html__( 'Select the product attribute you want to update.', 'bulk-product-attribute-assign' )
+);
+echo '</td></tr>';
+
+// Attribute Terms row.
+echo '<tr>';
+printf(
+	'<th scope="row"><label for="bpaa-terms">%s</label></th>',
+	esc_html__( 'Attribute Terms', 'bulk-product-attribute-assign' )
+);
+echo '<td>';
+echo '<select id="bpaa-terms" name="terms[]" class="regular-text" multiple="multiple" required disabled>';
+printf( '<option value="">%s</option>', esc_html__( 'Select an attribute first...', 'bulk-product-attribute-assign' ) );
+echo '</select>';
+printf(
+	'<p class="description">%s</p>',
+	esc_html__( 'Select one or more terms to assign to products.', 'bulk-product-attribute-assign' )
+);
+echo '</td></tr>';
+
+// Mode row.
+echo '<tr>';
+printf( '<th scope="row">%s</th>', esc_html__( 'Mode', 'bulk-product-attribute-assign' ) );
+echo '<td><fieldset>';
+printf(
+	'<label><input type="radio" name="mode" value="%s" checked> %s</label><br>',
+	esc_attr( \Bulk_Product_Attribute_Assign\DEF_MODE_ADD ),
+	esc_html__( 'Add to existing terms', 'bulk-product-attribute-assign' )
+);
+printf(
+	'<label><input type="radio" name="mode" value="%s"> %s</label>',
+	esc_attr( \Bulk_Product_Attribute_Assign\DEF_MODE_REPLACE ),
+	esc_html__( 'Replace all existing terms', 'bulk-product-attribute-assign' )
+);
+printf(
+	'<p class="description">%s</p>',
+	esc_html__( 'Choose whether to add terms or replace existing ones.', 'bulk-product-attribute-assign' )
+);
+echo '</fieldset></td></tr>';
+
+// Options row.
+echo '<tr>';
+printf( '<th scope="row">%s</th>', esc_html__( 'Options', 'bulk-product-attribute-assign' ) );
+echo '<td><fieldset>';
+printf(
+	'<label><input type="checkbox" name="attribute_visible" value="1"> %s</label><br>',
+	esc_html__( 'Attribute visible on product page', 'bulk-product-attribute-assign' )
+);
+printf(
+	'<label><input type="checkbox" name="preview_only" value="1"> %s</label>',
+	esc_html__( 'Preview only (dry-run - don\'t make changes)', 'bulk-product-attribute-assign' )
+);
+echo '</fieldset></td></tr>';
+
+echo '</tbody></table>';
+
+// Product count display.
+echo '<div class="bpaa-product-count">';
+printf(
+	'<p><strong>%s</strong> <span id="bpaa-count">-</span></p>',
+	esc_html__( 'Products to process:', 'bulk-product-attribute-assign' )
+);
+echo '</div>';
+
+// Submit buttons.
+echo '<p class="submit">';
+printf(
+	'<button type="submit" class="button button-primary button-large" id="bpaa-submit">%s</button>',
+	esc_html__( 'Set attributes now...', 'bulk-product-attribute-assign' )
+);
+printf(
+	'<button type="button" class="button button-secondary" id="bpaa-reset">%s</button>',
+	esc_html__( 'Reset options', 'bulk-product-attribute-assign' )
+);
+echo '</p>';
+
+// Filter panel.
+require_once __DIR__ . '/filter-panel.php';
+
+// Close form.
+echo '</form>';
+
+// Progress and results panels.
+require_once __DIR__ . '/progress-panel.php';
+
+// Close wrappers.
+echo '</div>'; // .bpaa-admin-wrapper
+echo '</div>'; // .wrap

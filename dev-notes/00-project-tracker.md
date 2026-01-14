@@ -1,7 +1,7 @@
 # Bulk Assign Product Attributes - Project Tracker
 
-**Version:** 1.1.0  
-**Last Updated:** 13 January 2026
+**Version:** 1.2.0  
+**Last Updated:** 14 January 2026
 
 ---
 
@@ -219,15 +219,19 @@ WordPress/WooCommerce plugin to bulk-assign product attribute terms to products.
 
 ## Phase 2: Enhanced Features (Future)
 
-### 🔲 Milestone 11: Product Query Builder UI
-- [ ] Design query builder interface
-- [ ] Add category multi-select
-- [ ] Add tag multi-select  
-- [ ] Add product type filter
-- [ ] Add "All products" option
-- [ ] Build WP_Query args from selections
-- [ ] Show product count preview
-- [ ] Test filters work correctly
+### ✅ Milestone 11: Product Query Builder UI (v1.2.0)
+- [x] Design query builder interface (progressive disclosure filter panel)
+- [x] Add product status multi-select filter
+- [x] Add category multi-select
+- [x] Add tag multi-select
+- [x] Add name search filter
+- [x] Build wc_get_products() args from filter selections
+- [x] Show product count preview with filters
+- [x] Add filter enable/disable toggle
+- [x] Add reset options button
+- [x] Test filters work correctly with WooCommerce API
+- [x] Create modular filter-panel.php template
+- [x] Refactor all templates to code-first pattern
 
 ### 🔲 Milestone 12: Bundle Product Support
 - [ ] Research client's bundle plugin

@@ -32,6 +32,13 @@
         allowClear: true,
         width: '100%',
       });
+
+      // Initialize SelectWoo on filter dropdowns.
+      $('.bpaa-selectwoo').selectWoo({
+        placeholder: bpaaAdmin.strings.selectFilter || 'Select...',
+        allowClear: true,
+        width: '100%',
+      });
     },
 
     /**
@@ -39,6 +46,22 @@
      */
     bindEvents: function () {
       const self = this;
+
+      // Filter toggle.
+      $('#bpaa-show-filters').on('change', function () {
+        if ($(this).is(':checked')) {
+          $('#bpaa-filter-panel').slideDown(300);
+        } else {
+          $('#bpaa-filter-panel').slideUp(300);
+        }
+        // Recalculate product count when toggle changes.
+        self.updateProductCount();
+      });
+
+      // Update product count when filters change.
+      $('#bpaa-filter-panel').on('change', 'input, select', function () {
+        self.updateProductCount();
+      });
 
       // Attribute change - load terms.
       $('#bpaa-attribute').on('change', function () {
@@ -51,10 +74,49 @@
         self.handleSubmit();
       });
 
+      // Reset button.
+      $('#bpaa-reset').on('click', function (e) {
+        e.preventDefault();
+        self.resetForm();
+      });
+
       // Update product count when options change.
       $('input[name="include_virtual"]').on('change', function () {
         self.updateProductCount();
       });
+    },
+
+    /**
+     * Reset form to default values.
+     */
+    resetForm: function () {
+      // Reset attribute select.
+      $('#bpaa-attribute').val('').trigger('change');
+      
+      // Reset terms select.
+      $('#bpaa-terms').empty().append('<option value="">Select an attribute first...</option>').prop('disabled', true).trigger('change');
+      
+      // Reset mode to add.
+      $('input[name="mode"][value="add"]').prop('checked', true);
+      
+      // Reset options.
+      $('input[name="attribute_visible"]').prop('checked', false);
+      $('input[name="preview_only"]').prop('checked', false);
+      
+      // Uncheck filter toggle and hide panel.
+      $('#bpaa-show-filters').prop('checked', false);
+      $('#bpaa-filter-panel').hide();
+      
+      // Reset filter values.
+      $('#bpaa-product-status').val(['publish']).trigger('change');
+      $('#bpaa-categories').val([]).trigger('change');
+      $('#bpaa-tags').val([]).trigger('change');
+      $('#bpaa-name-search').val('');
+      $('input[name="bpaa_include_virtual"]').prop('checked', false);
+      $('input[name="bpaa_include_downloadable"]').prop('checked', false);
+      
+      // Update product count.
+      this.updateProductCount();
     },
 
     /**
@@ -116,10 +178,25 @@
     },
 
     /**
+     * Collect filter values from the filter panel.
+     */
+    getFilterValues: function () {
+      return {
+        enabled: $('#bpaa-show-filters').is(':checked'),
+        product_status: $('#bpaa-product-status').val() || ['publish'],
+        categories: $('#bpaa-categories').val() || [],
+        tags: $('#bpaa-tags').val() || [],
+        name_search: $('#bpaa-name-search').val() || '',
+        include_virtual: $('input[name="bpaa_include_virtual"]').is(':checked'),
+        include_downloadable: $('input[name="bpaa_include_downloadable"]').is(':checked'),
+      };
+    },
+
+    /**
      * Update the product count preview.
      */
     updateProductCount: function () {
-      const includeVirtual = $('input[name="include_virtual"]').is(':checked');
+      const filters = this.getFilterValues();
       const $countDisplay = $('#bpaa-count');
 
       $countDisplay.text('Calculating...');
@@ -131,7 +208,8 @@
         data: {
           action: bpaaAdmin.getProductCountAction,
           nonce: bpaaAdmin.productCountNonce,
-          include_virtual: includeVirtual
+          filters_enabled: filters.enabled,
+          filters: filters,
         },
         success: function (response) {
           if (response.success && typeof response.data.count !== 'undefined') {
@@ -155,8 +233,8 @@
       const termIds = $('#bpaa-terms').val();
       const mode = $('input[name="mode"]:checked').val();
       const attributeVisible = $('input[name="attribute_visible"]').is(':checked');
-      const includeVirtual = $('input[name="include_virtual"]').is(':checked');
       const previewOnly = $('input[name="preview_only"]').is(':checked');
+      const filters = this.getFilterValues();
 
       // Validation.
       if (!attribute) {
@@ -185,8 +263,8 @@
         termIds: termIds,
         mode: mode,
         attributeVisible: attributeVisible,
-        includeVirtual: includeVirtual,
         dryRun: previewOnly,
+        filters: filters,
       });
     },
 
@@ -202,7 +280,8 @@
         data: {
           action: bpaaAdmin.getTotalCountAction,
           nonce: bpaaAdmin.totalCountNonce,
-          include_virtual: settings.includeVirtual,
+          filters_enabled: settings.filters.enabled,
+          filters: settings.filters,
         },
         success: function (response) {
           if (response.success && response.data) {
@@ -212,7 +291,7 @@
               termIds: settings.termIds,
               mode: settings.mode,
               attributeVisible: settings.attributeVisible,
-              includeVirtual: settings.includeVirtual,
+              filters: settings.filters,
               dryRun: settings.dryRun,
               offset: 0,
               totalCount: response.data.total_count,
@@ -254,7 +333,8 @@
           term_ids: state.termIds,
           mode: state.mode,
           attribute_visible: state.attributeVisible,
-          include_virtual: state.includeVirtual,
+          filters_enabled: state.filters.enabled,
+          filters: state.filters,
           dry_run: state.dryRun,
           offset: state.offset,
           batch_size: state.batchSize,

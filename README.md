@@ -7,11 +7,11 @@
 **Requires Plugins:** WooCommerce  
 **WC requires at least:** 7.0  
 **WC tested up to:** 10.0  
-**Stable tag:** 1.1.0  
+**Stable tag:** 1.2.0  
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
-Bulk-assign product attribute terms to WooCommerce products. Designed for setting customs metadata across large product catalogs.
+Bulk-assign product attribute terms to WooCommerce products with advanced filtering. Designed for setting customs metadata across large product catalogs.
 
 ---
 
@@ -22,13 +22,14 @@ This WordPress/WooCommerce plugin provides a simple interface for bulk-assigning
 ### Features
 
 - **Bulk Operations:** Process hundreds or thousands of products at once
+- **Advanced Product Filtering:** Filter by status, categories, tags, and product name
 - **AJAX Batch Processing:** Handles large datasets without timeouts with dynamic batch sizing
 - **Real-time Progress:** Live progress bar with accurate percentage and product count
-- **Product Count Preview:** Shows "This will affect X products" before processing
+- **Product Count Preview:** Shows "This will affect X products" with live filter updates
 - **Two Modes:**
   - **Add Mode:** Add new terms to existing attribute terms
   - **Replace Mode:** Replace all existing terms with new ones
-- **Product Filtering:** Include/exclude virtual and downloadable products
+- **Product Filtering Options:** Include/exclude virtual and downloadable products
 - **Dry-Run Mode:** Preview mode to test operations without making changes
 - **Detailed Error Reporting:** See exactly which products failed and why
 - **WooCommerce HPOS Compatible:** Fully compatible with High-Performance Order Storage
